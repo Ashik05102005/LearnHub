@@ -11,9 +11,13 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
 
 
 # Quick-start development settings - unsuitable for production
@@ -37,6 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'accounts',
+    'courses',
+    'dashboard',
+    'enrollments',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +63,7 @@ ROOT_URLCONF = 'LearnHub.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates' ,BASE_DIR / 'accounts/template'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,3 +134,17 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
+# Specifies where unauthenticated users should be redirected 
+# when they try to access a page protected by @login_required.
+LOGIN_URL = 'login'
+
+# Specifies where users should be redirected after successfully logging in.
+LOGIN_REDIRECT_URL = 'home'
+
+# Specifies where users should be redirected after successfully logging out.
+LOGOUT_REDIRECT_URL = 'login'
+
+
