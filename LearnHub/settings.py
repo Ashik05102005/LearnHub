@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'courses',
     'dashboard',
     'enrollments',
+    'meterials'
 ]
 
 MIDDLEWARE = [
@@ -63,7 +64,11 @@ ROOT_URLCONF = 'LearnHub.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates' ,BASE_DIR / 'accounts/template'],
+        'DIRS': [BASE_DIR / 'templates' ,
+                 BASE_DIR / 'accounts/templates',
+                 BASE_DIR / 'dashboard/templates',
+                 BASE_DIR / 'courses/templates',
+                 ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

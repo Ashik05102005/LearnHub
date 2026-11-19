@@ -1,114 +1,200 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <script src="https://cdn.tailwindcss.com"></script>
-        
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}LearnHub | Learning Management System{% endblock %}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
 <style>
-    * {
-        box-sizing: border-box;
-    }
+    /* Django Form Styling */
 
-    body {
-        font-family: Arial, sans-serif;
-        background: #f4f6f9;
-    }
-
-    .register-container {
-        max-width: 600px;
-        margin: 40px auto;
-        padding: 30px;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
-
-    h2 {
-        text-align: center;
-        margin-bottom: 25px;
-    }
-
-    form > div {
+    form p {
         margin-bottom: 18px;
     }
 
-    label {
+    form label {
         display: block;
+        margin-bottom: 7px;
         font-size: 14px;
         font-weight: 600;
-        margin-top: 8px;
-        margin-bottom: 5px;
-        color: #333;
+        color: #334155;
     }
 
-    input:not([type="file"]) {
+    form input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+    form textarea,
+    form select {
+        display: block;
         width: 100%;
-        padding: 12px;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
+        padding: 11px 13px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background-color: #fff;
         font-size: 14px;
+        color: #1e293b;
         outline: none;
-    }
-   textarea#id_address {
-    display: block !important;
-    width: 100% !important;
-    height: 70px !important;
-    padding: 15px !important;
-    box-sizing: border-box !important;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: inherit;
-    resize: vertical;
-    outline: none;
-}
-    input:focus,
-    textarea:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 2px rgba(37,99,235,0.1);
+        transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-
-    textarea {
+    form textarea {
+        min-height: 110px;
         resize: vertical;
     }
 
-    .helptext {
-        display: none ;
+    form input:focus,
+    form textarea:focus,
+    form select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
     }
 
-    .errorlist {
+    /* Checkbox and Radio */
+    form input[type="checkbox"],
+    form input[type="radio"] {
+        width: auto;
+        margin-right: 7px;
+        accent-color: #2563eb;
+    }
+
+    /* File Input */
+    form input[type="file"] {
+        display: block;
+        width: 100%;
+        font-size: 14px;
+        color: #475569;
+    }
+
+    /* Django Help Text */
+    form .helptext {
+        display: block;
+        margin-top: 5px;
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    /* Django Validation Errors */
+    form .errorlist {
+        margin: 5px 0;
+        padding: 0;
+        list-style: none;
         color: #dc2626;
         font-size: 13px;
-        /* padding-left: 20px; */
     }
 
-    button {
-        width: 100%;
-        padding: 13px;
-        background: #2563eb;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 16px;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background: #1d4ed8;
+    /* Required Field Indicator */
+    form label.required::after {
+        content: " *";
+        color: #dc2626;
     }
 </style>
 
-    </head>
-    <body>
-        <header>
-            header
-        </header>
+</head>
+
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-800">
+
+    <!-- Navbar -->
+    <header class="bg-slate-900 shadow-lg">
+        <nav class="max-w-8xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+
+            <!-- Logo -->
+            <a href="{% url 'course_list' %}"
+               class="text-2xl font-extrabold tracking-tight text-white">
+                Learn<span class="text-blue-400">Hub</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="flex items-center flex-wrap gap-5 text-sm font-medium">
+
+                <a href="{% url 'course_list' %}"
+                   class="text-slate-300 hover:text-white transition">
+                    Courses
+                </a>
+
+                {% if user.is_authenticated %}
+
+                    <a href="{% url 'dashboard_redirect' %}"
+                       class="text-slate-300 hover:text-white transition">
+                        Dashboard
+                    </a>
+
+                    {% if perms.courses.add_courses %}
+                        <a href="{% url 'create_course' %}"
+                           class="text-slate-300 hover:text-white transition">
+                            Create Course
+                        </a>
+                    {% endif %}
+
+                    <span class="text-blue-300">
+                        {{ user.username }}
+                    </span>
+
+                    <form method="POST" action="{% url 'logout' %}">
+                        {% csrf_token %}
+
+                        <button type="submit"
+                            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition">
+                            Logout
+                        </button>
+                    </form>
+
+                {% else %}
+
+                    <a href="{% url 'login' %}"
+                       class="text-slate-300 hover:text-white transition">
+                        Login
+                    </a>
+
+                    <a href="{% url 'register' %}"
+                       class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition">
+                        Get Started
+                    </a>
+
+                {% endif %}
+
+            </div>
+        </nav>
+    </header>
+
+
+    <!-- Main Content -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-6 py-10">
+
         {% block content %}
-
         {% endblock %}
-        <footer>
-            footer
-        </footer>
-    </body>
 
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400">
+
+        <div class="max-w-8xl mx-auto px-6 py-8">
+
+            <div class="flex flex-col md:flex-row justify-between items-center gap-5">
+
+                <div>
+                    <h2 class="text-2xl font-bold text-white">
+                        Learn<span class="text-blue-400">Hub</span>
+                    </h2>
+
+                    <p class="text-sm mt-2">
+                        Learn today. Lead tomorrow.
+                    </p>
+                </div>
+
+                <div class="text-sm text-center md:text-right">
+                    <p>© {% now "Y" %} LearnHub. All rights reserved.</p>
+                    <p class="mt-1">Empowering learners through knowledge.</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+</body>
 </html>
