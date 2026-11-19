@@ -142,7 +142,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 LOGIN_URL = 'login'
 
 # Specifies where users should be redirected after successfully logging in.
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'dashboard_redirect'
 
 # Specifies where users should be redirected after successfully logging out.
 LOGOUT_REDIRECT_URL = 'login'

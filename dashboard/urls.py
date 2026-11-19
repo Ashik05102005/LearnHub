@@ -18,5 +18,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('',views.home )
+    path('' , views.dashboard_redirect , name='dashboard_redirect'),
+    path('admin_dashboard/',views.admin_View,name='admin_view'),
+    path('instructor_dashboard/',views.instructor_View,name='instructor_view'),
+    path('student_dashboard/',views.student_View,name='student_view'),
 ]
