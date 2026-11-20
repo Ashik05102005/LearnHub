@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="w-full flex  justify-center">
+    <form 
+    class="border w-1/2 p-5 rounded-2xl"
+    method="POST">
+        <h1
+        class="text-slate-800 text-4xl mb-3 font-semibold"
+        >Edit Course</h1>
+        {% csrf_token %}
+    
+        {{ form.as_p }}
+    
+        <button 
+
+        class="w-full flex justify-center text-slate-50 bg-slate-800 p-2  rounded font-semibold"
+        type="submit">Update Course</button>
+    </form>
+</div>
+
+{% endblock %}

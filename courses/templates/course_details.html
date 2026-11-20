@@ -1,0 +1,107 @@
+
+{% extends 'base.html' %}
+
+{% block title %}{{ course.title }} | LearnHub{% endblock %}
+
+{% block content %}
+
+<div class="max-w-5xl mx-auto px-4 py-12">
+
+    <!-- Course Details Card -->
+    <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+
+        <!-- Header -->
+        <div class="bg-slate-900 px-8 py-10">
+            <p class="text-blue-300 text-sm font-semibold uppercase tracking-wider mb-3">
+                LearnHub Course
+            </p>
+
+            <h1 class="text-3xl md:text-4xl font-bold text-white">
+                {{ course.title }}
+            </h1>
+
+            <p class="text-slate-300 mt-3">
+                Learn and improve your skills with this course.
+            </p>
+        </div>
+
+        <!-- Course Information -->
+        <div class="p-8">
+
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-slate-800 mb-3">
+                    About This Course
+                </h2>
+
+                <p class="text-slate-600 leading-7 whitespace-pre-line">
+                    {{ course.description }}
+                </p>
+            </div>
+
+            <!-- Instructor and Date -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-slate-200 pt-6">
+
+                <div>
+                    <p class="text-sm text-slate-500 mb-1">
+                        Course Instructor
+                    </p>
+
+                    <p class="font-semibold text-slate-800">
+                        {{ course.instructor.username }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-sm text-slate-500 mb-1">
+                        Created On
+                    </p>
+
+                    <p class="font-semibold text-slate-800">
+                        {{ course.created_at|date:"d M Y" }}
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap gap-3 mt-8 pt-6 border-t border-slate-200">
+
+                {% if can_manage_course %}
+
+                    <a href="{% url 'edit_course' course.id %}"
+                       class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">
+                        Edit Course
+                    </a>
+
+                    <a href="{% url 'delete_course' course.id %}"
+                       class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition">
+                        Delete Course
+                    </a>
+
+                {% else %}
+
+                    <form method="POST"
+                          action="{% url 'enroll_course' course.id %}">
+                        {% csrf_token %}
+
+                        <button type="submit"
+                                class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">
+                            Enroll Now
+                        </button>
+                    </form>
+
+                {% endif %}
+
+                <a href="{% url 'course_list' %}"
+                   class="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg transition">
+                    Back to Courses
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
