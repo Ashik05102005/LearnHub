@@ -1,25 +1,65 @@
+
 {% extends 'base.html' %}
 
 {% block content %}
 
-<h1>Delete Course</h1>
+<div class="min-h-[75vh] flex items-center justify-center px-4 py-10">
 
-<p>
-    Are you sure you want to delete
-    <strong>{{ course.title }}</strong>?
-</p>
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-center">
 
-<form method="POST">
-    {% csrf_token %}
+        <!-- Warning Icon -->
+        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-red-100 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="w-10 h-10 text-red-600"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor"
+                 stroke-width="2">
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 9v4m0 4h.01M10.29 3.86l-8.18 14.2A2 2 0 003.84 21h16.32a2 2 0 001.73-2.94l-8.18-14.2a2 2 0 00-3.42 0z"/>
+            </svg>
+        </div>
 
-    <button type="submit">
-        Yes, Delete
-    </button>
+        <!-- Heading -->
+        <h1 class="text-2xl font-bold text-gray-800 mb-3">
+            Delete Course?
+        </h1>
 
-    <a href="{% url 'course_details' course.id %}">
-        Cancel
-    </a>
+        <!-- Description -->
+        <p class="text-gray-500 text-sm leading-6 mb-8">
+            Are you sure you want to delete
+            <span class="font-semibold text-gray-800">
+                {{ course.title }}
+            </span>?
+            This action cannot be undone.
+        </p>
 
-</form>
+        <!-- Actions -->
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+
+                <button type="submit"
+                    class="w-full sm:w-auto px-6 py-3 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition duration-200">
+                    Yes, Delete
+                </button>
+
+                <a href="{% url 'course_details' course.id %}"
+                   class="w-full sm:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-lg transition duration-200">
+                    Cancel
+                </a>
+
+            </div>
+        </form>
+
+        <p class="text-xs text-gray-400 mt-6">
+            Please make sure before proceeding.
+        </p>
+
+    </div>
+
+</div>
 
 {% endblock %}
