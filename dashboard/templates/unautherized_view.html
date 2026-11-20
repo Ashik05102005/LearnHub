@@ -1,0 +1,91 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="min-h-[80vh] flex items-center justify-center px-4 py-12">
+
+    <div class="w-full max-w-lg bg-white rounded-2xl shadow-lg border border-gray-100 p-8 sm:p-10 text-center">
+
+        <!-- Lock Icon -->
+        <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-red-50 flex items-center justify-center">
+
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="w-12 h-12 text-red-500"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor"
+                 stroke-width="1.7">
+
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-7a2 2 0 00-2-2H6a2 2 0 00-2 2v7a2 2 0 002 2zm2-11V7a4 4 0 118 0v4H8z"/>
+
+            </svg>
+
+        </div>
+
+        <!-- Error Code -->
+        <p class="text-sm font-bold tracking-widest text-red-500 uppercase mb-3">
+            Access Restricted · 403
+        </p>
+
+        <!-- Heading -->
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">
+            Access Denied!
+        </h1>
+
+        <!-- Description -->
+        <p class="text-gray-500 text-sm leading-7 mb-6">
+            Sorry, you don't have permission to access this page.
+            Your account may not be assigned to the required user group
+            or you may not have the necessary permissions.
+        </p>
+
+        <!-- Info Box -->
+        <div class="bg-gray-50 border border-gray-100 rounded-xl p-4 mb-8 text-left">
+
+            <div class="flex items-start gap-3">
+
+                <span class="text-amber-500 text-lg">ⓘ</span>
+
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-800 mb-1">
+                        What can you do?
+                    </h3>
+
+                    <p class="text-xs text-gray-500 leading-6">
+                        Please contact your administrator to verify your
+                        account role and group permissions.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row justify-center gap-3">
+
+            <a href="{% url 'home' %}"
+               class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition duration-200">
+                Back to Home
+            </a>
+
+            <a href="javascript:history.back()"
+               class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-lg transition duration-200">
+                Go Back
+            </a>
+
+        </div>
+
+        <!-- Footer -->
+        <p class="text-xs text-gray-400 mt-8">
+            LearnHub · Secure Learning Platform
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

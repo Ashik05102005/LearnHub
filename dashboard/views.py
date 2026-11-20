@@ -12,7 +12,7 @@ def dashboard_redirect(request):
     elif user.groups.filter(name='Student').exists():
         return redirect('student_view')
     else :
-        return redirect('login')
+        return render(request,'unautherized_view.html',status=403)
 
 @login_required
 @user_passes_test(lambda user: user.groups.filter(name='Admin').exists())
