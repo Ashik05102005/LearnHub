@@ -22,4 +22,14 @@ class Enrollment(models.Model):
         choices=Status.choices ,
         default=Status.PENDING
     )
-    
+
+    class Meta :
+        constraints = [
+            models.UniqueConstraint(
+                fields=['student','course'],
+                name='unique_student_course_enrollment'
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.student} - {self.course}"

@@ -1,0 +1,120 @@
+
+{% extends 'base.html' %}
+
+{% block title %}My Enrollments | LearnHub{% endblock %}
+
+{% block content %}
+
+<div class="max-w-6xl mx-auto px-4 py-10">
+
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-slate-800">
+            My Enrollments
+        </h1>
+
+        <p class="text-slate-500 mt-2">
+            Track your course enrollment requests and their status.
+        </p>
+    </div>
+
+    {% if enrollments %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            {% for enrollment in enrollments %}
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+
+                    <h2 class="text-xl font-semibold text-slate-800 mb-2">
+                        {{ enrollment.course.title }}
+                    </h2>
+
+                    <p class="text-sm text-slate-500 mb-2">
+                        Instructor:
+                        {{ enrollment.course.instructor.username }}
+                    </p>
+
+                    <p class="text-sm text-slate-500 mb-4">
+                        Enrolled on:
+                        {{ enrollment.enrolled_at|date:"d M Y" }}
+                    </p>
+
+                    <div class="mb-5">
+                        <span class="text-sm font-medium text-slate-600">
+                            Status:
+                        </span>
+
+                        {% if enrollment.status == 'Approved' %}
+                            <span class="text-green-700 bg-green-100 px-3 py-1 rounded-full text-xs font-semibold">
+                                Approved
+                            </span>
+
+                        {% elif enrollment.status == 'Pending' %}
+                            <span class="text-yellow-700 bg-yellow-100 px-3 py-1 rounded-full text-xs font-semibold">
+                                Pending
+                            </span>
+
+                        {% else %}
+                            <span class="text-red-700 bg-red-100 px-3 py-1 rounded-full text-xs font-semibold">
+                                Rejected
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    {% if enrollment.status == 'Approved' %}
+
+                        <a href="#"
+                           class="block text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg">
+                            View Course
+                        </a>
+
+                    {% elif enrollment.status == 'Pending' %}
+
+                        <form method="POST"
+                              action="{% url 'cancel_enrollment' enrollment.id %}">
+                            {% csrf_token %}
+
+                            <button type="submit"
+                                    class="w-full bg-red-50 hover:bg-red-100 text-red-600 py-2 rounded-lg">
+                                Cancel Request
+                            </button>
+                        </form>
+
+                    {% else %}
+
+                        <p class="text-sm text-slate-500">
+                            Your enrollment request was rejected.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="bg-white border border-slate-200 rounded-xl p-10 text-center">
+
+            <h2 class="text-xl font-semibold text-slate-700 mb-2">
+                No Enrollments Yet
+            </h2>
+
+            <p class="text-slate-500 mb-5">
+                You haven't enrolled in any courses yet.
+            </p>
+
+            <a href="{% url 'course_list' %}"
+               class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">
+                Explore Courses
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

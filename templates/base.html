@@ -126,6 +126,13 @@
                             Create Course
                         </a>
                     {% endif %}
+                    {% if 'Student' in request.user.groups.all|join:',' %}
+                        <a 
+                        class="text-slate-300 hover:text-white transition"
+                        href="{% url 'my_enrollments' %}">
+                            My Enrollments
+                        </a>
+                    {% endif %}
 
                     <span class="text-blue-300">
                         {{ user.username }}
