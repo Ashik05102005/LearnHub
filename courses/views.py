@@ -29,6 +29,7 @@ def create_course(request) :
     return render(request , 'create_course.html',{'form':form})
 
 @login_required
+@permission_required('courses.view_courses' )
 def course_list(request):
 
     if request.user.groups.filter(name='Admin').exists() :
