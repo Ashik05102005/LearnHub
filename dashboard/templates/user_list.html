@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="min-h-screen bg-gray-50 p-6">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div class="">
+                <h1 class="text-3xl font-bold text-gray-800">
+                    User Management
+                </h1>
+                <p class="text-gray-500 mt-2">
+                    Manage users and assign their roles.
+                </p>
+            </div>
+            <a href="{% url 'admin_view' %}"
+            class="bg-gray-800 text-white px-5 py-2.5 rounded-lg hover:bg-gray-700 transition">
+                Back to Dashboard
+            </a>
+        </div>
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 p-4 rounded-lg 
+                    {% if message.tags == 'success' %}
+                        bg-green-100 text-green-700
+                    {% else %}
+                        bg-red-100 text-red-700
+                    {% endif %}
+                    ">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-6">
+            <p class="text-sm text-gray-500">
+                Total Users
+            </p>
+            <h2 class="text-3xl font-bold text-gray-800 mt-1">
+                {{ users|length }}
+            </h2>
+        </div>
+        <!-- Search and Filter -->
+         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-6">
+            <form method="GET" class="flex flex-col md:flex-row gap-4">
+                <input 
+                type="text"
+                name="Search"
+                value="{{Search}}"
+                placeholder="Search by username or email..."
+                class="w-12 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                >
+                <select name="group"
+                class="border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="">All Groups</option>
+                    <option value="Admin" {% if selected_group == 'Admin'%} selected {% endif %}>Admin</option>
+                    <option value="instructor" {% if selected_group == 'Instructor'%} selected {% endif %}>Instructor</option>
+                    <option value="Student" {% if selected_group == 'Student'%} selected {% endif %}>Student</option>
+                </select>
+                <button
+                type="submit"
+                class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition"
+                >Search</button>
+                <a href="{% url 'user_list' %}"
+                class="bg-gray-200 text-gray-700 px-6 py-2.5 rounded-lg hover:bg-gray-300 text-center transition"
+                >Reset</a>
+            </form>
+         </div>
+
+        <!-- Users Table  -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="p-5 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-800">All users</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 text-gray-600 text-sm">
+                        <tr>
+                            <th class="px-6 py-4">#</th>
+                            <th class="px-6 py-4">User</th>
+                            <th class="px-6 py-4">Email</th>
+                            <th class="px-6 py-4">Current Group</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4">Change Group</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for user in users %}
+                            <tr class="hover:bg-gray-50 transition">
+                                <!-- ID -->
+                                <td class="px-6 py-4 text-gray-500">
+                                    {{forloop.counter}}
+                                </td>
+                                <!-- username  -->
+                                <td class="px-6 py-4">
+                                    <p class="font-medium text-gray-800">{{user.username}}</p>
+                                    <p class="text-xs text-gray-400">ID: {{user.id}}</p>
+                                </td>
+                                <!-- email  -->
+                                <td class="px-6 py-4 text-gray-500">
+                                {{user.email|default:"No email"}}
+                                </td>
+                                 <!-- current group -->
+                                <td class="px-6 py-4">
+                                    {% for group in user.groups.all %}
+                                        <span class="px-3 py-1 rounded-full text-xs font-medium
+                                                    {% if group.name == 'Admin' %}
+                                                        bg-red-100 text-red-700
+                                                    {% elif group.name == 'Instructor' %}
+                                                        bg-blue-100 text-blue-700
+                                                    {% elif group.name == 'Student' %}
+                                                        bg-green-100 text-green-700 
+                                                    {% else %}
+                                                        bg-gray-100 text-gray-700 
+                                                    
+                                                    {% endif %}">
+                                                {{ group.name }}
+                                        </span>
+                                        {% empty %}
+                                        <span class="text-gray-400 text-sm">No Group</span>
+                                    {% endfor %}
+                                </td>
+                                <!-- Status -->
+                                <td class="px-6 py-4">
+                                    {% if user.is_active %}
+                                        <span class="px-3 py-1 rounded-full text-xs bg-green-100 text-green-700">Active</span>
+                                    {% else %}
+                                        <span class="px-3 py-1 rounded-full text-xs bg-red-100 text-red-700">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <!-- Change Group -->
+                                <td class="px-6 py-4">
+
+                                    {% if user.is_superuser %}
+
+                                        <span class="text-xs text-gray-400">
+                                            Protected
+                                        </span>
+
+                                    {% else %}
+
+                                        {% with current_group=user.groups.all|first %}
+
+                                            <form method="POST"
+                                                action="{% url 'user_list' %}"
+                                                class="flex items-center gap-2">
+
+                                                {% csrf_token %}
+
+                                                <input type="hidden"
+                                                    name="user_id"
+                                                    value="{{ user.id }}">
+
+                                                <select name="group"
+                                                        required
+                                                        class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+
+                                                    {% if not current_group %}
+                                                        <option value="" selected disabled>
+                                                            No Group
+                                                        </option>
+                                                    {% endif %}
+
+                                                    {% for group in groups %}
+
+                                                        <option value="{{ group.id }}"
+                                                            {% if current_group.id == group.id %}
+                                                                selected
+                                                            {% endif %}>
+
+                                                            {{ group.name }}
+
+                                                        </option>
+
+                                                    {% endfor %}
+
+                                                </select>
+
+                                                <button type="submit"
+                                                        class="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-700">
+
+                                                    Update
+
+                                                </button>
+
+                                            </form>
+
+                                        {% endwith %}
+
+                                    {% endif %}
+
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6"
+                                    class="text-center py-10 text-gray-500">
+                                    No users found.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
