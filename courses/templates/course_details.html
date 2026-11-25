@@ -68,27 +68,43 @@
 
                 {% if can_manage_course %}
 
-                    <a href="{% url 'edit_course' course.id %}"
-                       class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">
-                        Edit Course
-                    </a>
+                    <!-- Admin / Course Instructor -->
+                    <span class="bg-indigo-100 text-indigo-700 px-5 py-3 rounded-lg font-semibold">
+                        <i class="fa-solid fa-user-shield mr-2"></i>
+                        Course Management
+                    </span>
 
-                    <a href="{% url 'delete_course' course.id %}"
-                       class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition">
-                        Delete Course
-                    </a>
+                {% elif enrollment %}
+
+                    {% if enrollment.status == 'Pending' %}
+
+                        <span class="bg-yellow-100 text-yellow-700 px-5 py-3 rounded-lg font-semibold">
+                            <i class="fa-solid fa-clock mr-2"></i>
+                            Enrollment Pending
+                        </span>
+
+                    {% elif enrollment.status == 'Approved' %}
+
+                        <span class="bg-green-100 text-green-700 px-5 py-3 rounded-lg font-semibold">
+                            <i class="fa-solid fa-circle-check mr-2"></i>
+                            Enrolled Successfully
+                        </span>
+
+                    {% elif enrollment.status == 'Rejected' %}
+
+                        <span class="bg-red-100 text-red-700 px-5 py-3 rounded-lg font-semibold">
+                            <i class="fa-solid fa-circle-xmark mr-2"></i>
+                            Enrollment Rejected
+                        </span>
+
+                    {% endif %}
 
                 {% else %}
 
-                    <form method="POST"
-                          action="{% url 'enroll_course' course.id %}">
-                        {% csrf_token %}
-
-                        <button type="submit"
-                                class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">
-                            Enroll Now
-                        </button>
-                    </form>
+                    <a href="{% url 'enroll_course' course.id %}"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition">
+                        Enroll Now
+                    </a>
 
                 {% endif %}
 

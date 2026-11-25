@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required , permission_required
 from .form import CourseForm
 from .models import Courses
 from django.contrib import messages
+from enrollments.models import Enrollment
 
 # Create your views here.
 @login_required
@@ -52,9 +53,19 @@ def course_details(request,course_id):
 
     is_instructor = request.user.groups.filter(name='Instructor').exists()
 
+    is_student = request.user.groups.filter(name='Student').exists()
+
     can_manage_course = (is_admin or is_instructor and course.instructor == request.user)
 
-    return render(request,'course_details.html',{'course':course , 'can_manage_course' : can_manage_course })
+    enrollment = None 
+
+    if is_student :
+        enrollment = Enrollment.objects.filter(
+            student = request.user , 
+            course = course 
+        ).first()
+
+    return render(request,'course_details.html',{'course':course , 'can_manage_course' : can_manage_course ,'enrollment':enrollment})
 
 @login_required
 def edit_course(request , course_id):

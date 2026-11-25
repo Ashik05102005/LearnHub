@@ -63,7 +63,7 @@
 
                     {% if enrollment.status == 'Approved' %}
 
-                        <a href="#"
+                        <a href="{% url 'course_details' enrollment.course.id %}"
                            class="block text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg">
                             View Course
                         </a>
