@@ -23,5 +23,5 @@ urlpatterns = [
     path('login/',auth_view.LoginView.as_view() , name='login' ),
     path('logout/' ,LogoutView.as_view() ,name='logout' ),
     path('register/',views.register_view , name='register' ),
-    path('home/',views.home , name='home'),
+    path('forgot_password/',views.forgot_password , name='forgot_password'),
 ]
