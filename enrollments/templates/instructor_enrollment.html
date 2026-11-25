@@ -1,0 +1,183 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gray-50 py-10">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">
+                Enrollment Requests
+            </h1>
+
+            <p class="text-gray-500 mt-2">
+                Review and manage student enrollment requests.
+            </p>
+        </div>
+
+
+    
+
+
+        <!-- Enrollment Table -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+
+            {% if enrollments %}
+
+            <div class="overflow-x-auto">
+
+                <table class="w-full text-left">
+
+                    <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+                        <tr>
+                            <th class="px-6 py-4">#</th>
+                            <th class="px-6 py-4">Student</th>
+                            <th class="px-6 py-4">Course</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-gray-100">
+
+                        {% for enrollment in enrollments %}
+
+                        <tr class="hover:bg-gray-50 transition">
+
+                            <!-- ID -->
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                {{ forloop.counter }}
+                            </td>
+
+
+                            <!-- Student -->
+                            <td class="px-6 py-4">
+
+                                <p class="font-medium text-gray-800">
+                                    {{ enrollment.student.username }}
+                                </p>
+
+                                <p class="text-sm text-gray-500">
+                                    {{ enrollment.student.email }}
+                                </p>
+
+                            </td>
+
+
+                            <!-- Course -->
+                            <td class="px-6 py-4">
+
+                                <p class="font-medium text-gray-800">
+                                    {{ enrollment.course.title }}
+                                </p>
+
+                            </td>
+
+
+                            <!-- Status -->
+                            <td class="px-6 py-4">
+
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
+                                    {{ enrollment.status }}
+                                </span>
+
+                            </td>
+
+
+                            <!-- Actions -->
+                            <td class="px-6 py-4">
+
+                                <div class="flex items-center gap-2">
+
+                                    <!-- Approve -->
+                                    <form method="POST">
+                                        {% csrf_token %}
+
+                                        <input type="hidden"
+                                               name="enrollment_id"
+                                               value="{{ enrollment.id }}">
+
+                                        <input type="hidden"
+                                               name="action"
+                                               value="approve">
+
+                                        <button
+                                            type="submit"
+                                            class="px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition">
+
+                                            <i class="fa-solid fa-check mr-1"></i>
+                                            Approve
+
+                                        </button>
+
+                                    </form>
+
+
+                                    <!-- Reject -->
+                                    <form method="POST">
+                                        {% csrf_token %}
+
+                                        <input type="hidden"
+                                               name="enrollment_id"
+                                               value="{{ enrollment.id }}">
+
+                                        <input type="hidden"
+                                               name="action"
+                                               value="reject">
+
+                                        <button
+                                            type="submit"
+                                            class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition">
+
+                                            <i class="fa-solid fa-xmark mr-1"></i>
+                                            Reject
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <!-- Empty State -->
+            <div class="text-center py-16 px-6">
+
+                <div class="w-16 h-16 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-user-clock text-2xl"></i>
+                </div>
+
+                <h3 class="text-lg font-semibold text-gray-800">
+                    No Pending Requests
+                </h3>
+
+                <p class="text-gray-500 text-sm mt-2">
+                    There are currently no pending enrollment requests for your courses.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

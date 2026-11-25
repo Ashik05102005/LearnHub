@@ -1,6 +1,6 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from courses.models import Courses
 from .models import Enrollment
 from django.contrib import messages
@@ -41,5 +41,30 @@ def cancel_enrollment(request , enrollment_id):
         messages.success(request,"Enrollment cancel succesfully")
 
     return redirect('my_enrollments')
+
+@login_required
+@user_passes_test(lambda user : user.groups.filter(name='Instructor').exists())
+def instructor_enrollments(request):
+    if request.method == 'POST':
+        enrollment_id = request.POST.get('enrollment_id')
+        action = request.POST.get('action')
+
+        enrollment = get_object_or_404(Enrollment , id = enrollment_id , course__instructor = request.user , status = 'Pending')
+
+        if action == 'approve' :
+            enrollment.status = 'Approved'
+            enrollment.save(update_fields=['status'])
+            messages.success(request , 'Enrollment approved successfully.')
+        elif action == 'reject' :
+            enrollment.status = 'Reject'
+            enrollment.save(update_fields=['status'])
+            messages.success(request , 'Enrollment rejected successfully.')
+        return redirect('instructor_enrollments')
+    
+    enrollments = Enrollment.objects.filter(course__instructor = request.user ,
+                                            status = 'Pending').select_related(
+                                                'student' , 'course' , 'course__instructor').order_by('-id')
+    return render(request , 'instructor_enrollment.html' , {'enrollments' : enrollments})
+    
 
     

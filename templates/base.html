@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,6 +9,7 @@
     <title>{% block title %}LearnHub | Learning Management System{% endblock %}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+
     <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
@@ -91,11 +93,96 @@
         content: " *";
         color: #dc2626;
     }
+
+    /* Toast Animations */
+
+    .toast-message {
+        animation: toastSlideIn 0.4s ease forwards;
+    }
+
+    .toast-message.hide {
+        animation: toastSlideOut 0.4s ease forwards;
+    }
+
+    @keyframes toastSlideIn {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes toastSlideOut {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+    }
+
 </style>
 
 </head>
 
+
 <body class="min-h-screen flex flex-col bg-slate-50 text-slate-800">
+
+    <!-- Toast Notifications -->
+    {% if messages %}
+    <div id="toast-container"
+         class="fixed top-5 right-5 z-[9999] space-y-3">
+
+        {% for message in messages %}
+
+        <div class="toast-message flex items-center gap-3 min-w-[300px] max-w-md p-4 rounded-xl shadow-lg border
+            {% if message.tags == 'success' %}
+                bg-green-50 border-green-200 text-green-700
+            {% elif message.tags == 'error' %}
+                bg-red-50 border-red-200 text-red-700
+            {% elif message.tags == 'warning' %}
+                bg-yellow-50 border-yellow-200 text-yellow-700
+            {% else %}
+                bg-blue-50 border-blue-200 text-blue-700
+            {% endif %}">
+
+            <!-- Icon -->
+            <div class="text-lg">
+                {% if message.tags == 'success' %}
+                    <i class="fa-solid fa-circle-check"></i>
+                {% elif message.tags == 'error' %}
+                    <i class="fa-solid fa-circle-xmark"></i>
+                {% elif message.tags == 'warning' %}
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                {% else %}
+                    <i class="fa-solid fa-circle-info"></i>
+                {% endif %}
+            </div>
+
+            <!-- Message -->
+            <p class="text-sm font-medium flex-1">
+                {{ message }}
+            </p>
+
+            <!-- Close Button -->
+            <button type="button"
+                    onclick="this.closest('.toast-message').remove()"
+                    class="hover:opacity-60 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+    {% endif %}
+
 
     <!-- Navbar -->
     <header class="bg-slate-900 shadow-lg">
@@ -128,8 +215,9 @@
                             Create Course
                         </a>
                     {% endif %}
+
                     {% if 'Student' in request.user.groups.all|join:',' %}
-                        <a 
+                        <a
                         class="text-slate-300 hover:text-white transition"
                         href="{% url 'my_enrollments' %}">
                             My Enrollments
@@ -204,6 +292,30 @@
         </div>
 
     </footer>
+
+
+    <!-- Toast Auto Dismiss -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const toasts = document.querySelectorAll('.toast-message');
+
+            toasts.forEach(function (toast) {
+
+                setTimeout(function () {
+
+                    toast.classList.add('hide');
+
+                    setTimeout(function () {
+                        toast.remove();
+                    }, 400);
+
+                }, 4000);
+
+            });
+
+        });
+    </script>
 
 </body>
 </html>
