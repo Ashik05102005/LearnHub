@@ -4,7 +4,8 @@ from django.contrib.auth import get_user_model
 from courses.models import Courses
 from django.contrib import messages
 from django.contrib.auth.models import Group
-from django.db.models import Q
+from django.db.models import Q,Count
+from enrollments.models import Enrollment
 
 User = get_user_model()
 
@@ -88,7 +89,20 @@ def user_list(request):
 @login_required
 @user_passes_test(lambda user: user.groups.filter(name='Instructor').exists() , login_url='unauthorized_view')
 def instructor_View(request):
-    return render(request ,'instructor_dashboard.html')
+    # Get only courses created by the logged-in instructor
+    my_courses = Courses.objects.filter(instructor = request.user).annotate(
+        enrollment_count = Count('student_enrollments',distinct=True)).order_by('-created_at')
+    total_courses = my_courses.count()
+    my_enrollments = Enrollment.objects.filter(course__instructor = request.user)
+    total_students = my_enrollments.values('student').distinct().count()
+    pending_enrollments = my_enrollments.filter(status='Pending').count()
+    context = {
+         'my_courses': my_courses,
+        'total_courses': total_courses,
+        'total_students': total_students,
+        'pending_enrollments': pending_enrollments,
+    }
+    return render(request ,'instructor_dashboard.html',context)
 
 @login_required
 @user_passes_test(lambda user: user.groups.filter(name='Student').exists() , login_url='unauthorized_view')

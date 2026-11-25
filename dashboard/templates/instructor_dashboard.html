@@ -1,1 +1,287 @@
-<h1>INSTRUCTOR</h1>
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gray-50">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">
+                    Instructor Dashboard
+                </h1>
+
+                <p class="text-gray-500 mt-2">
+                    Welcome back, {{ request.user.username }}!
+                    Here's an overview of your courses and students.
+                </p>
+            </div>
+
+            <span class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm font-semibold w-fit">
+                Instructor
+            </span>
+
+        </div>
+
+
+        <!-- Statistics -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+
+            <!-- My Courses -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between">
+
+                    <div>
+                        <p class="text-sm text-gray-500">My Courses</p>
+
+                        <h2 class="text-3xl font-bold text-gray-800 mt-2">
+                            {{ total_courses }}
+                        </h2>
+                    </div>
+
+                    <div class="bg-indigo-100 text-indigo-600 p-3 rounded-lg">
+                        <i class="fa-solid fa-book-open text-xl"></i>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Total Students -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between">
+
+                    <div>
+                        <p class="text-sm text-gray-500">Total Students</p>
+
+                        <h2 class="text-3xl font-bold text-gray-800 mt-2">
+                            {{ total_students }}
+                        </h2>
+                    </div>
+
+                    <div class="bg-green-100 text-green-600 p-3 rounded-lg">
+                        <i class="fa-solid fa-users text-xl"></i>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Pending Enrollments -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between">
+
+                    <div>
+                        <p class="text-sm text-gray-500">Pending Enrollments</p>
+
+                        <h2 class="text-3xl font-bold text-gray-800 mt-2">
+                            {{ pending_enrollments }}
+                        </h2>
+                    </div>
+
+                    <div class="bg-orange-100 text-orange-600 p-3 rounded-lg">
+                        <i class="fa-solid fa-clock text-xl"></i>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- End Statistics -->
+
+
+        <!-- My Courses Heading -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">
+                    My Courses
+                </h2>
+
+                <p class="text-gray-500 text-sm mt-1">
+                    View and monitor the courses you have created.
+                </p>
+            </div>
+
+            <a href="{% url 'course_list' %}"
+               class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+                View All Courses →
+            </a>
+
+        </div>
+
+
+        <!-- Courses Table -->
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden mb-10">
+
+            <div class="p-5 border-b border-gray-200">
+
+                <h3 class="text-lg font-bold text-gray-800">
+                    Course Overview
+                </h3>
+
+            </div>
+
+            <div class="overflow-x-auto">
+
+                <table class="w-full text-left">
+
+                    <thead class="bg-gray-50 text-gray-600 text-sm">
+
+                        <tr>
+                            <th class="px-6 py-4">#</th>
+                            <th class="px-6 py-4">Course</th>
+                            <th class="px-6 py-4">Students</th>
+                            <th class="px-6 py-4">Created</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody class="divide-y divide-gray-100">
+
+                        {% for course in my_courses %}
+
+                            <tr class="hover:bg-gray-50 transition">
+
+                                <td class="px-6 py-4 text-gray-500">
+                                    {{ forloop.counter }}
+                                </td>
+
+                                <td class="px-6 py-4">
+                                    <p class="font-semibold text-gray-800">
+                                        {{ course.title }}
+                                    </p>
+
+                                    <p class="text-xs text-gray-400 mt-1">
+                                        {{ course.description|truncatewords:10 }}
+                                    </p>
+                                </td>
+
+                                <td class="px-6 py-4">
+
+                                    <span class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium">
+                                        {{ course.enrollment_count }}
+                                    </span>
+
+                                </td>
+
+                                <td class="px-6 py-4 text-gray-500 text-sm">
+                                    {{ course.created_at|date:"d M Y" }}
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+                                <td colspan="4" class="text-center py-12">
+
+                                    <div class="flex flex-col items-center">
+
+                                        <i class="fa-solid fa-book-open text-4xl text-gray-300 mb-3"></i>
+
+                                        <p class="text-gray-600 font-medium">
+                                            No courses available
+                                        </p>
+
+                                        <p class="text-gray-400 text-sm mt-1">
+                                            You haven't created any courses yet.
+                                        </p>
+
+                                    </div>
+
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- Quick Actions -->
+        <div class="mb-6">
+
+            <h2 class="text-xl font-bold text-gray-800">
+                Quick Actions
+            </h2>
+
+            <p class="text-gray-500 text-sm mt-1">
+                Manage your teaching activities.
+            </p>
+
+        </div>
+
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Manage Courses -->
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition">
+
+                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-book-open text-xl"></i>
+                </div>
+
+                <h3 class="text-lg font-bold text-gray-800">
+                    Manage Courses
+                </h3>
+
+                <p class="text-gray-500 text-sm mt-2 mb-5">
+                    View, edit and manage the courses you have created.
+                </p>
+
+                <a href="{% url 'course_list' %}"
+                   class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition">
+
+                    My Courses
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+
+            <!-- Manage Enrollments -->
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition">
+
+                <div class="w-12 h-12 bg-green-100 text-green-600 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-user-check text-xl"></i>
+                </div>
+
+                <h3 class="text-lg font-bold text-gray-800">
+                    Manage Enrollments
+                </h3>
+
+                <p class="text-gray-500 text-sm mt-2 mb-5">
+                    View student enrollment requests for your courses.
+                </p>
+
+                <a href="{% url 'my_enrollments' %}"
+                   class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition">
+
+                    View Enrollments
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
