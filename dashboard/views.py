@@ -107,4 +107,14 @@ def instructor_View(request):
 @login_required
 @user_passes_test(lambda user: user.groups.filter(name='Student').exists() , login_url='unauthorized_view')
 def student_View(request):
-    return render(request ,'student_dashboard.html')
+    my_enrollments = Enrollment.objects.filter(student=request.user).select_related(
+        'course','course__instructor').order_by('-enrolled_at')
+    active_enrollments = my_enrollments.filter(status = 'Active').count()
+    # metaerials after add   
+    context = {
+        'my_enrollments' : my_enrollments ,
+        'total_courses' : my_enrollments.count() ,
+        'active_enrollments':active_enrollments,
+        'total_meterials':0
+    }
+    return render(request ,'student_dashboard.html',context)
