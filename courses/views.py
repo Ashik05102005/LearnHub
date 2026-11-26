@@ -45,6 +45,7 @@ def course_list(request):
     return render(request,'course_list.html',{'courses':courses})
 
 @login_required
+@permission_required('courses.view_courses' )
 def course_details(request,course_id):
     
     course = get_object_or_404(Courses,id=course_id)
@@ -68,6 +69,7 @@ def course_details(request,course_id):
     return render(request,'course_details.html',{'course':course , 'can_manage_course' : can_manage_course ,'enrollment':enrollment})
 
 @login_required
+# @permission_required(['courses.change_course'])
 def edit_course(request , course_id):
     course = get_object_or_404(Courses,id=course_id)
     is_admin = request.user.groups.filter(name='Admin').exists()
