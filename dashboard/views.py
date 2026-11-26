@@ -42,7 +42,7 @@ def user_list(request):
         group_id = request.POST.get('group')
 
         user = get_object_or_404(User , id = user_id)
-
+        # try to update the group of super user show error msg
         if user.is_superuser:
             messages.error(request , "Superuser group cannot be changed here.")
             return redirect('user_list')
@@ -50,13 +50,16 @@ def user_list(request):
         group = get_object_or_404(
             Group,
             id = group_id ,
+            # WHERE name IN ['Admin' , 'Instructor' , 'Student'] 
             name__in = ['Admin' , 'Instructor' , 'Student'] 
         )
 
+        # admin cannot change his group
         if user == request.user and group.name != 'Admin' :
             messages.error(request,"You cannot remove your own Admin access")
             return redirect('user_list')
 
+        # update the group of the current user
         user.groups.set([group])
 
         messages.success(
@@ -64,12 +67,14 @@ def user_list(request):
             f"{user.username} is now assigned to {group.name}"
         )
         return redirect('user_list')
-    search = request.GET.get('search','')
+
+    
+    search = request.GET.get('Search','')
     selected_group = request.GET.get('group','')
 
     if search :
         users = users.filter(
-            Q(username_icontains = search) | Q(email_icontains = search)
+            Q(username__icontains = search) | Q(email__icontains = search)
         )
 
     if selected_group in ['Admin','Instructor','Student']:
