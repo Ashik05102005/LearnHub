@@ -18,10 +18,10 @@ class Courses(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta :
-        permissions = [
-            ('can_publish_course' , 'Can publish course')
-        ]
+    # class Meta :
+    #     permissions = [
+    #         ('can_publish_course' , 'Can publish course')
+    #     ]
 
     def __str__(self):
         return self.title
