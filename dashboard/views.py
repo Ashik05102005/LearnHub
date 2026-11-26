@@ -114,7 +114,7 @@ def instructor_View(request):
 def student_View(request):
     my_enrollments = Enrollment.objects.filter(student=request.user).select_related(
         'course','course__instructor').order_by('-enrolled_at')
-    active_enrollments = my_enrollments.filter(status = 'Active').count()
+    active_enrollments = my_enrollments.filter(status = 'Approved').count()
     # metaerials after add   
     context = {
         'my_enrollments' : my_enrollments ,
