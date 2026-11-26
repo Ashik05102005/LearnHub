@@ -22,6 +22,8 @@ class CustomUserCreationForm(UserCreationForm):
             ),
         }
 
+    # used to remove help text
+    # eg:Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
