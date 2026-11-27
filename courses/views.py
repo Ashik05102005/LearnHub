@@ -54,10 +54,6 @@ def course_details(request,course_id):
     
     course = get_object_or_404(Courses,id=course_id)
 
-    is_admin = request.user.groups.filter(name = 'Admin').exists()
-
-    is_instructor = request.user.groups.filter(name='Instructor').exists()
-
     is_student = request.user.groups.filter(name='Student').exists()
 
     can_manage_course = (request.user.has_perm('courses.can_manage_course'))
