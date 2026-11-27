@@ -18,6 +18,7 @@ class Courses(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-
+    class Meta :
+        permissions = [('can_manage_course', 'Can manage course'),]
     def __str__(self):
         return self.title

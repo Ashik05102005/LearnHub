@@ -6,28 +6,32 @@ from .models import Courses
 from django.contrib import messages
 from enrollments.models import Enrollment
 
-# Create your views here.
+
 @login_required
-@permission_required('courses.add_courses' , raise_exception=True)
-def create_course(request) :
+@permission_required('courses.add_courses', raise_exception=True)
+def create_course(request):
 
     is_admin = request.user.groups.filter(name='Admin').exists()
 
     if request.method == 'POST':
-        form = CourseForm(request.POST)
+
+        form = CourseForm(request.POST, user=request.user)
 
         if form.is_valid():
+
             course = form.save(commit=False)
+
             if not is_admin:
                 course.instructor = request.user
+
             course.save()
 
-        return redirect('course_list')
-    
-    else :
-        form = CourseForm()
+            return redirect('course_list')
 
-    return render(request , 'create_course.html',{'form':form})
+    else:
+        form = CourseForm(user=request.user)
+
+    return render(request, 'create_course.html', {'form': form})
 
 @login_required
 @permission_required('courses.view_courses' )
@@ -56,7 +60,7 @@ def course_details(request,course_id):
 
     is_student = request.user.groups.filter(name='Student').exists()
 
-    can_manage_course = (is_admin or is_instructor and course.instructor == request.user)
+    can_manage_course = (request.user.has_perm('courses.can_manage_course'))
 
     enrollment = None 
 
@@ -69,7 +73,6 @@ def course_details(request,course_id):
     return render(request,'course_details.html',{'course':course , 'can_manage_course' : can_manage_course ,'enrollment':enrollment})
 
 @login_required
-# @permission_required(['courses.change_course'])
 def edit_course(request , course_id):
     course = get_object_or_404(Courses,id=course_id)
     is_admin = request.user.groups.filter(name='Admin').exists()
@@ -78,14 +81,17 @@ def edit_course(request , course_id):
         return HttpResponse("Permission Denied", status=403)
     
     if request.method == "POST":
-        form = CourseForm(request.POST , instance=course)
+        form = CourseForm(request.POST , instance=course , user = request.user)
 
         if form.is_valid():
-            form.save()
+            updated_course = form.save(commit=False)
+            if not is_admin:
+                updated_course.instructor = request.user
+            updated_course.save()
             return redirect('course_details',course_id=course.id)
         
     else:
-        form = CourseForm(instance=course)
+        form = CourseForm(instance=course,user=request.user)
 
     return render(request,'edit_course.html',{'form':form , 'course' : course})
 
